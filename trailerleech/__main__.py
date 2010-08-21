@@ -3,12 +3,12 @@
 import sys
 
 import urllib2
-import simplejson
+import json 
 import html5lib
 
 baseurl = "http://trailers.apple.com"
 trailerinclude = "includes/playlists/web.inc"
-movies = simplejson.load(urllib2.urlopen("http://trailers.apple.com/trailers/home/feeds/genres.json"))
+movies = json.load(urllib2.urlopen("http://trailers.apple.com/trailers/home/feeds/genres.json"))
 
 toload = {}
 
