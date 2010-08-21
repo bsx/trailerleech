@@ -55,6 +55,20 @@ if len(match) > 0:
             except:
                 pass
         i += 1
+else:
+    match = doc.xpath("//h:li[contains(@class,'trailer')]", namespaces={"h": "http://www.w3.org/1999/xhtml"})
+    if len(match) > 0:
+        for section in match:
+            name = section.xpath(".//h:h3", namespaces={"h": "http://www.w3.org/1999/xhtml"})[0].text
+            trailer = {"name": name}
+            trailer["links"] = []
+            for link in section.xpath(".//h:a[@class='target-quicktimeplayer']", namespaces={"h": "http://www.w3.org/1999/xhtml"}):
+                href = link.attrib["href"]
+                res = link.text.split(" ")[0]
+                trailer["links"].append({"res": res, "url": href})
+            trailers.append(trailer)
+    else:
+        print "BUG: Couldn't parse %s" % url
 
 i = 0
 for trailer in trailers:
@@ -94,8 +108,10 @@ link = selected["links"][index]
 mov = urllib2.urlopen(urllib2.Request(url=link["url"],headers={"User-Agent": "QuickTime"}))
 size = int(mov.info().get("Content-Length"))
 if size < 200:
-    realfilename = mov.read()[44:44+ord(fakemov[43])]
-    base = link.rsplit("/", 1)[0]
+    content = mov.read()
+    print content
+    realfilename = content[44:44+ord(content[43])]
+    base = link["url"].rsplit("/", 1)[0]
     reallink = "%s/%s" % (base, realfilename)
     mov = urllib2.urlopen(urllib2.Request(url=reallink,headers={"User-Agent": "QuickTime"}))
     size = int(mov.info().get("Content-Length"))
@@ -113,5 +129,7 @@ while read > 0:
     target.write(buffer)
     full += read
     print "got %d of %d bytes" % (full, size)
+target.close()
+mov.close()
 
 print "DONE!"
