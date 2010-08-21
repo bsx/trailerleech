@@ -109,7 +109,6 @@ mov = urllib2.urlopen(urllib2.Request(url=link["url"],headers={"User-Agent": "Qu
 size = int(mov.info().get("Content-Length"))
 if size < 200:
     content = mov.read()
-    print content
     realfilename = content[44:44+ord(content[43])]
     base = link["url"].rsplit("/", 1)[0]
     reallink = "%s/%s" % (base, realfilename)
