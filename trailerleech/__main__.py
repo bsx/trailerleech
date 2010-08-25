@@ -8,7 +8,7 @@ import html5lib
 
 baseurl = "http://trailers.apple.com"
 trailerinclude = "includes/playlists/web.inc"
-movies = json.load(urllib2.urlopen("http://trailers.apple.com/trailers/home/feeds/genres.json"))
+movies = json.load(urllib2.urlopen(urllib2.Request(url="http://trailers.apple.com/trailers/home/feeds/genres.json",headers={"User-Agent": "Safari"})))
 
 toload = {}
 
@@ -31,7 +31,7 @@ except:
 toload = movies[index]
 
 url = "%s%s%s" % (baseurl, toload["location"], trailerinclude)
-doc = html5lib.parse(urllib2.urlopen(url), treebuilder="lxml")
+doc = html5lib.parse(urllib2.urlopen(urllib2.Request(url=url,headers={"User-Agent": "Safari"})), treebuilder="lxml")
 
 trailers = []
 
